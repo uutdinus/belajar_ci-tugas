@@ -166,7 +166,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="editHarga" class="form-label">Harga</label>
-                            <input type="text" class="form-control" id="editHarga" name="harga" required>
+                            <input type="text" class="form-control" id="editHargaNumeric" value="" name="harga" required>
                         </div>
                         <div class="mb-3">
                             <label for="editJumlah" class="form-label">Jumlah</label>
@@ -240,17 +240,19 @@
             var produk = <?= json_encode($produk) ?>;
             var editId = document.getElementById('editId');
             var editNama = document.getElementById('editNama');
-            var editHarga = document.getElementById('editHarga');
+            var editHarga = document.getElementById('editHargaNumeric');
             var editJumlah = document.getElementById('editJumlah');
             var previewFoto = document.getElementById('editPreviewFoto');
             var selectedProduk = produk[index];
 
             editId.value = selectedProduk.id;
             editNama.value = selectedProduk.nama;
-            editHarga.value = selectedProduk.harga;
+            editHarga.value = formatRupiah(selectedProduk.harga);
             editJumlah.value = selectedProduk.jumlah;
             previewFoto.src = '<?= base_url('img/') ?>' + selectedProduk.foto;
             previewFoto.style.display = 'block';
+
+            console.log(editHarga.value)
 
             var editDataModal = new bootstrap.Modal(document.getElementById('editDataModal'), {
                 keyboard: false
@@ -276,6 +278,20 @@
             }
         }
 
+        function formatRupiah(angka) {
+            var reverse = angka.toString().split('').reverse().join(''),
+                ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return 'Rp ' + ribuan;
+        }
+
+        document.getElementById('editHargaNumeric').addEventListener('keyup', function () {
+            var harga = this.value.replace(/\D/g, '');
+            this.value = formatRupiah(harga);
+
+
+
+        });
         function previewTambahFoto(input) {
             var previewFoto = document.getElementById('tambahPreviewFoto');
             var file = input.files[0];
@@ -294,17 +310,7 @@
             }
         }
 
-        function formatRupiah(angka) {
-            var reverse = angka.toString().split('').reverse().join(''),
-                ribuan = reverse.match(/\d{1,3}/g);
-            ribuan = ribuan.join('.').split('').reverse().join('');
-            return 'Rp ' + ribuan;
-        }
 
-        document.getElementById('editHarga').addEventListener('keyup', function () {
-            var harga = this.value.replace(/\D/g, '');
-            this.value = formatRupiah(harga);
-        });
 
         document.getElementById('harga').addEventListener('keyup', function () {
             var harga = this.value.replace(/\D/g, '');
